@@ -35,6 +35,7 @@ websockify --web /usr/share/novnc 6080 localhost:5901 &
 # ----------------------------------------------------------------- hermes --
 mkdir -p "$HOME/.hermes"
 {
+    echo "RIVER_API_KEY=${RIVER_API_KEY:-}"
     echo "OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}"
     echo "TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}"
     if [ -n "${TELEGRAM_ALLOWED_USERS:-}" ]; then
@@ -42,11 +43,28 @@ mkdir -p "$HOME/.hermes"
     fi
 } > "$HOME/.hermes/.env"
 
-cat > "$HOME/.hermes/config.yaml" <<'YEOF'
+# Provider priority: River (paid, Sam's choice) when its key is present,
+# otherwise the free OpenRouter vision model.
+if [ -n "${RIVER_API_KEY:-}" ]; then
+    DEF_PROVIDER="river"
+    DEF_MODEL="nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4"
+else
+    DEF_PROVIDER="openrouter"
+    DEF_MODEL="nvidia/nemotron-3.5-super-vl:free"
+fi
+
+cat > "$HOME/.hermes/config.yaml" <<YEOF
 model:
-  provider: openrouter
-  default: nvidia/nemotron-3.5-super-vl:free
+  provider: ${DEF_PROVIDER}
+  default: ${DEF_MODEL}
 providers:
+  river:
+    base_url: https://api.river.ai/v1
+    key_env: RIVER_API_KEY
+    models:
+      - nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
+      - deepseek-ai/DeepSeek-V4.1-Flash
+      - zai-org/GLM-5.3-Flash
   openrouter:
     key_env: OPENROUTER_API_KEY
     base_url: https://openrouter.ai/api/v1

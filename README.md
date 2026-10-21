@@ -23,9 +23,13 @@ drive its own computer: click, type, open apps, use the browser.
    | Variable | Value |
    | --- | --- |
    | `TELEGRAM_BOT_TOKEN` | Token from @BotFather |
-   | `OPENROUTER_API_KEY` | Your OpenRouter key |
+   | `RIVER_API_KEY` | Your River key (paid) — used when present |
+   | `OPENROUTER_API_KEY` | Your OpenRouter key (free fallback) |
    | `VNC_PASSWORD` | Password for the desktop (default: `hermes`) |
    | `TELEGRAM_ALLOWED_USERS` | (optional) Your numeric Telegram ID |
+
+   Provider priority: if `RIVER_API_KEY` is set, Hermes defaults to River's
+   Nemotron VL model; otherwise it uses the free OpenRouter vision model.
 
 3. **Settings → Networking → Generate Domain**, target port **6080**.
 4. Open `https://<your-domain>/vnc.html` to see the desktop.
