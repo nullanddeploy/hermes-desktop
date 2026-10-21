@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     novnc websockify \
     dbus-x11 at-spi2-core x11-xserver-utils \
     fonts-dejavu-core fonts-liberation \
-    curl wget git nano sudo ca-certificates gnupg \
+    curl wget git nano sudo ca-certificates gnupg openssh-server \
     python3 python3-venv python3-pip \
     && rm -rf /var/lib/apt/lists/*
 

@@ -32,6 +32,16 @@ vncserver :1 -geometry 1280x800 -depth 24 -rfbport 5901 \
 # Browser access to the desktop: http://<domain>/vnc.html
 websockify --web /usr/share/novnc 6080 localhost:5901 &
 
+# -------------------------------------------------------------------- ssh --
+# Terminal access from Termius etc. In Railway: Settings -> Networking ->
+# TCP Proxy -> internal port 22. Login: user "user", password $SSH_PASSWORD
+# (falls back to the VNC password, then to "hermes").
+SSH_PASS="${SSH_PASSWORD:-${VNC_PASSWORD:-hermes}}"
+echo "user:${SSH_PASS}" | sudo chpasswd
+sudo mkdir -p /var/run/sshd
+sudo ssh-keygen -A >/dev/null 2>&1 || true
+sudo /usr/sbin/sshd || true
+
 # ----------------------------------------------------------------- hermes --
 mkdir -p "$HOME/.hermes"
 {
